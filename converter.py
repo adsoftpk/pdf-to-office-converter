@@ -13,14 +13,26 @@ from docx.enum.text import WD_ALIGN_PARAGRAPH
 from pdf2docx import Converter
 
 
+import shutil
+
+# Tesseract configuration
+# Windows par local development ke liye
+if os.name == "nt":
+    pytesseract.pytesseract.tesseract_cmd = (
+        r"C:\Program Files\Tesseract-OCR\tesseract.exe"
+    )
+
+# Streamlit Cloud / Linux ke liye
+else:
+    tesseract_path = shutil.which("tesseract")
+
+    if tesseract_path:
+        pytesseract.pytesseract.tesseract_cmd = tesseract_path
 
 
-pytesseract.pytesseract.tesseract_cmd = (
-    r"C:\Program Files\Tesseract-OCR\tesseract.exe"
-)
-
-
-
+# ---------------------------------------------------
+# CHECK PDF TYPE
+# ---------------------------------------------------
 
 def is_scanned_pdf(pdf_bytes):
     """
@@ -46,7 +58,9 @@ def is_scanned_pdf(pdf_bytes):
     return len(total_text) < 100
 
 
-
+# ---------------------------------------------------
+# NORMAL PDF -> WORD
+# ---------------------------------------------------
 
 def normal_pdf_to_word(pdf_bytes):
     """
@@ -97,7 +111,9 @@ def normal_pdf_to_word(pdf_bytes):
         return word_bytes
 
 
-
+# ---------------------------------------------------
+# OCR PAGE
+# ---------------------------------------------------
 
 def get_ocr_data(page):
     """
@@ -138,7 +154,9 @@ def get_ocr_data(page):
     return image, ocr_data
 
 
-
+# ---------------------------------------------------
+# SCANNED PDF -> EDITABLE WORD
+# ---------------------------------------------------
 
 def scanned_pdf_to_word(pdf_bytes):
     """
@@ -300,7 +318,9 @@ def scanned_pdf_to_word(pdf_bytes):
     return output
 
 
-
+# ---------------------------------------------------
+# MAIN WORD CONVERTER
+# ---------------------------------------------------
 
 def create_word(pdf_bytes):
     """
@@ -324,7 +344,9 @@ def create_word(pdf_bytes):
     )
 
 
-
+# ---------------------------------------------------
+# EXTRACT TEXT
+# ---------------------------------------------------
 
 def extract_text_from_pdf(pdf_bytes):
 
@@ -380,7 +402,9 @@ def extract_text_from_pdf(pdf_bytes):
     return pages
 
 
-
+# ---------------------------------------------------
+# CSV
+# ---------------------------------------------------
 
 def create_csv(pages):
 
